@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using Ngrok.AspNetCore;
 
 namespace LMS.API;
 
@@ -76,9 +75,6 @@ public class Program
             options.KnownIPNetworks.Clear();
             options.KnownProxies.Clear();
         });
-
-        // Ngrok tunnel integration
-        builder.Services.AddNgrok();
 
         var app = builder.Build();
 
