@@ -1,4 +1,5 @@
 using System.Net;
+using LMS.Core.Results;
 
 namespace LMS.API.Middleware;
 
@@ -29,18 +30,19 @@ public class ExceptionHandlingMiddleware
     {
         _logger.LogError(exception, "An unexpected error occurred.");
 
-        ExceptionResponse response = exception switch
+        var (statusCode, code, message) = exception switch
         {
-            ApplicationException _ => new ExceptionResponse(HttpStatusCode.BadRequest, "Application exception occurred."),
-            KeyNotFoundException _ => new ExceptionResponse(HttpStatusCode.NotFound, "The requested key was not found."),
-            UnauthorizedAccessException _ => new ExceptionResponse(HttpStatusCode.Unauthorized, "Unauthorized."),
-            _ => new ExceptionResponse(HttpStatusCode.InternalServerError, "Internal server error. Please retry later.")
+            ApplicationException appEx => (HttpStatusCode.BadRequest, "BAD_REQUEST", appEx.Message),
+            KeyNotFoundException _ => (HttpStatusCode.NotFound, "NOT_FOUND", "The requested resource was not found."),
+            UnauthorizedAccessException _ => (HttpStatusCode.Unauthorized, "UNAUTHORIZED", "Unauthorized access."),
+            _ => (HttpStatusCode.InternalServerError, "INTERNAL_SERVER_ERROR", "Internal server error. Please retry later.")
         };
 
+        var traceId = context.TraceIdentifier;
+        var errorPayload = new ErrorPayload(code, message, new List<ErrorDetail>(), traceId);
+
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)response.StatusCode;
-        await context.Response.WriteAsJsonAsync(response);
+        context.Response.StatusCode = (int)statusCode;
+        await context.Response.WriteAsJsonAsync(errorPayload);
     }
 }
-
-public record ExceptionResponse(HttpStatusCode StatusCode, string Description);
