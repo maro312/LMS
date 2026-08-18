@@ -1,0 +1,14 @@
+namespace LMS.Core.Enums;
+
+public enum ResultStatus
+{
+    Ok = 200,
+    Error,
+    Forbidden = 403,
+    Unauthorized = 401,
+    Invalid = 400,
+    NotFound = 404,
+    Conflict,
+    CriticalError = 500,
+    Unavailable
+}
