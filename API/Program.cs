@@ -1,6 +1,7 @@
 using System.Text;
 using LMS.API.Middleware;
 using LMS.Infrastructure.DbContexts;
+using LMS.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,10 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Configuration.AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
+
+        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
@@ -45,7 +50,8 @@ public class Program
             .AddEntityFrameworkStores<LmsDbContext>()
             .AddDefaultTokenProviders();
 
-        var secret = builder.Configuration.GetValue<string>("JwtConfiguration:Secret") ?? "DefaultSuperSecretKeyForDevelopmentOnly12345!";
+        var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
+        var secret = !string.IsNullOrEmpty(jwtOptions?.Secret) ? jwtOptions.Secret : "DefaultSuperSecretKeyForDevelopmentOnly12345!";
         var key = Encoding.ASCII.GetBytes(secret);
 
         builder.Services.AddAuthentication(options =>
