@@ -1,5 +1,7 @@
 using System.Text;
+using Application.Extensions;
 using LMS.API.Middleware;
+using LMS.Infrastructure.Data;
 using LMS.Infrastructure.DbContexts;
 using LMS.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,7 +23,10 @@ public class Program
 
         builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 
+        builder.Services.AddLmsServices(builder.Configuration);
+
         builder.Services.AddControllers();
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -45,8 +50,8 @@ public class Program
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
-        builder.Services.AddIdentityCore<IdentityUser>()
-            .AddRoles<IdentityRole>()
+        builder.Services.AddIdentityCore<IdentityUser<Guid>>()
+            .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<LmsDbContext>()
             .AddDefaultTokenProviders();
 
