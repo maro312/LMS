@@ -1,11 +1,12 @@
 using LMS.Domain.Entities;
 using LMS.Domain.Lookups;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure.DbContexts;
 
-public class LmsDbContext : IdentityDbContext
+public class LmsDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
 {
     public LmsDbContext(DbContextOptions<LmsDbContext> options) : base(options)
     {
