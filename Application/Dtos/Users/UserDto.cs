@@ -1,13 +1,9 @@
-using System;
-using LMS.Core.Entities;
+﻿using LMS.Core.Dtos;
 using Microsoft.AspNetCore.Identity;
 
-namespace LMS.Domain.Entities;
+namespace Application.Dtos.Users;
 
-/// <summary>
-/// Represents a User entity.
-/// </summary>
-public class User : AuditableEntity<Guid>
+public class UserDto : AuditableDto<Guid>
 {
     /// <summary>
     /// Foreign key referencing the associated ASP.NET Core Identity user.
@@ -29,4 +25,3 @@ public class User : AuditableEntity<Guid>
     /// </summary>
     public bool IsActive { get; set; }
 }
-
