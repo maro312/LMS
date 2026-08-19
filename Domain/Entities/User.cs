@@ -12,12 +12,12 @@ public class User : AuditableEntity<Guid>
     /// <summary>
     /// Foreign key referencing the associated ASP.NET Core Identity user.
     /// </summary>
-    public string IdentityUserId { get; set; } = string.Empty;
+    public Guid IdentityUserId { get; set; }
 
     /// <summary>
     /// Navigation property to the associated IdentityUser.
     /// </summary>
-    public IdentityUser? IdentityUser { get; set; }
+    public IdentityUser<Guid>? IdentityUser { get; set; }
 
     /// <summary>
     /// Display name
