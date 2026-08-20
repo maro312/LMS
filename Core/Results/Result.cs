@@ -63,7 +63,7 @@ public class Result<T> : IResult
             ResultStatus.Unauthorized => "UNAUTHORIZED",
             ResultStatus.Forbidden => "FORBIDDEN",
             ResultStatus.Conflict => "CONFLICT",
-            ResultStatus.CriticalError => "INTERNAL_SERVER_ERROR",
+            ResultStatus.InternalServerError => "INTERNAL_SERVER_ERROR",
             ResultStatus.Unavailable => "SERVICE_UNAVAILABLE",
             _ => "ERROR"
         };
@@ -95,7 +95,7 @@ public class Result<T> : IResult
                     ResultStatus.Conflict => "A conflict occurred with the current state.",
                     ResultStatus.BadRequest => "Invalid request payload.",
                     ResultStatus.Invalid => "Business validation failed.",
-                    ResultStatus.CriticalError => "An unexpected backend error occurred.",
+                    ResultStatus.InternalServerError => "An unexpected backend error occurred.",
                     _ => "An error occurred."
                 };
             }
@@ -202,9 +202,9 @@ public class Result<T> : IResult
         return new Result<T>(ResultStatus.Conflict) { Errors = errorMessages };
     }
 
-    public static Result<T> CriticalError(params string[] errorMessages)
+    public static Result<T> InternalServerError(params string[] errorMessages)
     {
-        return new Result<T>(ResultStatus.CriticalError) { Errors = errorMessages };
+        return new Result<T>(ResultStatus.InternalServerError) { Errors = errorMessages };
     }
 
     public static Result<T> Unavailable(params string[] errorMessages)
