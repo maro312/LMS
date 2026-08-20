@@ -1,6 +1,8 @@
 using Application.Contracts.Auth;
+using Application.Contracts.Lookups;
 using Application.Contracts.Users;
 using Application.Services.Auth;
+using Application.Services.Lookups;
 using Application.Services.Users;
 using LMS.Application.Contracts.UOW;
 using LMS.Application.Services.UOW;
@@ -12,9 +14,13 @@ public static partial class LmsRegistration
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+        services.AddScoped<LMS.Infrastructure.Services.ICurrentUserService, LMS.Infrastructure.Services.CurrentUserService>();
         services.AddScoped<IUserAppService, UserAppService>();
         services.AddScoped<IAuthenticationAppService, AuthenticationAppService>();
+        services.AddScoped<ICategoryAppService, CategoryAppService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
 }
+
