@@ -137,8 +137,8 @@ public class Result : Result<Result>
         return new Result(ResultStatus.Unavailable) { Errors = errorMessages };
     }
 
-    public new static Result CriticalError(params string[] errorMessages)
+    public new static Result InternalServerError(params string[] errorMessages)
     {
-        return new Result(ResultStatus.CriticalError) { Errors = errorMessages };
+        return new Result(ResultStatus.InternalServerError) { Errors = errorMessages };
     }
 }

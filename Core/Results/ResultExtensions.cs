@@ -32,8 +32,8 @@ public static class ResultExtensions
                 return result.Errors.Any()
                     ? Result<TDestination>.Conflict(result.Errors.ToArray())
                     : Result<TDestination>.Conflict();
-            case ResultStatus.CriticalError:
-                return Result<TDestination>.CriticalError(result.Errors.ToArray());
+            case ResultStatus.InternalServerError:
+                return Result<TDestination>.InternalServerError(result.Errors.ToArray());
             case ResultStatus.Unavailable:
                 return Result<TDestination>.Unavailable(result.Errors.ToArray());
             default:

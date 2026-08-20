@@ -4,7 +4,7 @@ namespace LMS.Core.Entities;
 /// Base class for Lookup entities.
 /// </summary>
 /// <typeparam name="T">The type of the primary key.</typeparam>
-public class LookupEntity<T> : BaseEntity<T>
+public class LookupEntity<T> : AuditableEntity<T>
 {
     /// <summary>
     /// Display name of the lookup entry.
