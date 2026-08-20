@@ -27,7 +27,6 @@ public class UserAppService : IUserAppService
         user.CreatedBy = input.IdentityUserId.ToString();
         user.CreatedDate = DateTime.Now;
         await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
         return Result<UserDto>.Created(user.ToDto());
     }
 
