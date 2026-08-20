@@ -4,6 +4,8 @@ using Application.Contracts.Users;
 using Application.Services.Auth;
 using Application.Services.Lookups;
 using Application.Services.Users;
+using Application.Contracts.Books;
+using Application.Services.Books;
 using LMS.Application.Contracts.UOW;
 using LMS.Application.Services.UOW;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,7 @@ public static partial class LmsRegistration
         services.AddScoped<IUserAppService, UserAppService>();
         services.AddScoped<IAuthenticationAppService, AuthenticationAppService>();
         services.AddScoped<ICategoryAppService, CategoryAppService>();
+        services.AddScoped<IBookAppService, BookAppService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }

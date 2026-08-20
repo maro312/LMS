@@ -1,13 +1,9 @@
-using System;
-using LMS.Core.Entities;
-using LMS.Domain.Lookups;
+﻿using LMS.Domain.Lookups;
+using Microsoft.AspNetCore.Http;
 
-namespace LMS.Domain.Entities;
+namespace Application.Dtos.Books;
 
-/// <summary>
-/// Represents a Book entity.
-/// </summary>
-public class Book : AuditableEntity<Guid>
+public class CreateUpdateBookDto
 {
     /// <summary>
     /// Optional ISBN
@@ -28,7 +24,6 @@ public class Book : AuditableEntity<Guid>
     /// Category lookup reference
     /// </summary>
     public Guid? CategoryId { get; set; }
-    public Category? Category { get; set; }
 
     /// <summary>
     /// Availability flag
@@ -44,14 +39,17 @@ public class Book : AuditableEntity<Guid>
     /// Copies currently available
     /// </summary>
     public int AvailableCopies { get; set; }
+
     /// <summary>
-    /// The URL of the book's photo. This property is optional and can be null if no photo is available.
+    /// Book photo file uploaded by the user. This property is optional and can be null if no file is uploaded.
     /// </summary>
-    public string? BookPhotoUrl { get; set; } = default!;
+    public IFormFile? BookPhotoFile { get; set; }
+
     /// <summary>
     /// The name of the publisher. This property is optional and can be null if the publisher's name is not available.
     /// </summary>
     public string? PublisherName { get; set; } = string.Empty;
+
     /// <summary>
     /// The date when the book was published. This property is optional and can be null if the publish date is not available.
     /// </summary>
