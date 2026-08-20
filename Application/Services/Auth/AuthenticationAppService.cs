@@ -2,10 +2,12 @@ using Application.Contracts.Auth;
 using Application.Contracts.Users;
 using Application.Dtos.Auth;
 using Application.Dtos.Users;
+using LMS.Application.Contracts.UOW;
 using LMS.Core.Results;
 using LMS.Domain.Constants;
 using LMS.Infrastructure.Options;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,15 +20,21 @@ public class AuthenticationAppService : IAuthenticationAppService
     private readonly UserManager<IdentityUser<Guid>> _userManager;
     private readonly IUserAppService _userAppService;
     private readonly JwtOptions _jwtOptions;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<AuthenticationAppService> _logger;
 
     public AuthenticationAppService(
         UserManager<IdentityUser<Guid>> userManager,
         IUserAppService userAppService,
-        IOptions<JwtOptions> jwtOptions)
+        IOptions<JwtOptions> jwtOptions,
+        IUnitOfWork unitOfWork,
+        ILogger<AuthenticationAppService> logger)
     {
         _userManager = userManager;
         _userAppService = userAppService;
         _jwtOptions = jwtOptions.Value;
+        _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<Result<AuthenticationDto>> Register(RegisterationDto dto)
@@ -43,36 +51,53 @@ public class AuthenticationAppService : IAuthenticationAppService
             UserName = dto.Email,
         };
 
-        var result = await _userManager.CreateAsync(newUser, dto.Password);
+        await _unitOfWork.BeginTransactionAsync();
 
-        if (!result.Succeeded)
+        try
         {
-            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            return Result<AuthenticationDto>.BadRequest(errors);
+            var result = await _userManager.CreateAsync(newUser, dto.Password);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return Result<AuthenticationDto>.BadRequest(errors);
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+            if (!roleResult.Succeeded)
+            {
+                var roleErrors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+                return Result<AuthenticationDto>.BadRequest(roleErrors);
+            }
+
+            CreateUpdateUserDto user = new CreateUpdateUserDto
+            {
+                FullName = dto.FullName,
+                IsActive = true,
+                IdentityUserId = newUser.Id
+            };
+
+            var userDto = await _userAppService.CreateAsync(user);
+
+            var token = await GenerateJwtToken(newUser);
+            await _unitOfWork.CommitTransactionAsync();
+            return Result<AuthenticationDto>.Success(new AuthenticationDto
+            {
+                Token = token,
+                Email = newUser.Email
+            });
+        }
+        catch (Exception ex) 
+        {
+            _logger.LogError(ex, "Error occurred during user registration.");
+            await _unitOfWork.RollbackTransactionAsync();
+            return Result<AuthenticationDto>.InternalServerError("An error occurred during registration. Please try again.");
+        }
+        finally
+        {
+            _unitOfWork.Dispose();
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(newUser, UserRoles.User);
-        if (!roleResult.Succeeded)
-        {
-            var roleErrors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
-            return Result<AuthenticationDto>.BadRequest(roleErrors);
-        }
-
-        CreateUpdateUserDto user = new CreateUpdateUserDto
-        {
-            FullName = dto.FullName,
-            IsActive = true,
-            IdentityUserId = newUser.Id
-        };
-
-        var userDto = await _userAppService.CreateAsync(user);
-
-        var token = await GenerateJwtToken(newUser);
-        return Result<AuthenticationDto>.Success(new AuthenticationDto
-        {
-            Token = token,
-            Email = newUser.Email
-        });
     }
 
     public async Task<Result<AuthenticationDto>> Login(LoginDto dto)

@@ -18,6 +18,8 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [ProducesResponseType(typeof(Result<AuthenticationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<AuthenticationDto>), StatusCodes.Status400BadRequest)]
     public async Task<Result<AuthenticationDto>> Register([FromBody] RegisterationDto dto)
     {
         var result = await _authService.Register(dto);
@@ -25,6 +27,8 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ProducesResponseType(typeof(Result<AuthenticationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<AuthenticationDto>), StatusCodes.Status400BadRequest)]
     public async Task<Result<AuthenticationDto>> Login([FromBody] LoginDto dto)
     {
         var result = await _authService.Login(dto);
