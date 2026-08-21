@@ -36,6 +36,7 @@ public class BookAppService : IBookAppService
         }
 
         await _bookRepository.AddAsync(book);
+        await _bookRepository.SaveChangesAsync();
         return Result<BookDto>.Created(book.ToDto());
     }
 
