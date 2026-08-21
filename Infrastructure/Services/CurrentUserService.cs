@@ -14,7 +14,7 @@ namespace LMS.Infrastructure.Services
 
         private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
-        public string? UserId => User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string? UserId => User?.FindFirstValue("Id");
 
         public string? Email => User?.FindFirstValue(ClaimTypes.Email);
 

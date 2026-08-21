@@ -1,25 +1,24 @@
-using System;
-using LMS.Core.Entities;
+﻿using Application.Dtos.Books;
+using Application.Dtos.Users;
+using LMS.Core.Dtos;
+using LMS.Domain.Entities;
 using LMS.Domain.Enums;
 
-namespace LMS.Domain.Entities;
+namespace Application.Dtos.BorrowingRequest;
 
-/// <summary>
-/// Represents a Borrowing Request entity.
-/// </summary>
-public class BorrowingRequest : AuditableEntity<Guid>
+public class BorrwingRequestsDto : AuditableDto<Guid>
 {
     /// <summary>
     /// Related book
     /// </summary>
     public Guid BookId { get; set; }
-    public Book Book { get; set; }
+    public BookDto Book { get; set; }
 
     /// <summary>
     /// Requesting user
     /// </summary>
     public Guid UserId { get; set; }
-    public User Requester { get; set; }
+    public UserDto Requester { get; set; }
 
     /// <summary>
     /// Pending, Approved, Denied, Returned, Expired
@@ -45,7 +44,7 @@ public class BorrowingRequest : AuditableEntity<Guid>
     /// Admin reviewer ID
     /// </summary>
     public Guid? ReviewedBy { get; set; }
-    public User? Reviewer { get; set; }
+    public UserDto? Reviewer { get; set; }
 
     /// <summary>
     /// Present when denied
