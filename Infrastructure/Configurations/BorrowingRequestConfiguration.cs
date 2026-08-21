@@ -15,10 +15,6 @@ public class BorrowingRequestConfiguration : IEntityTypeConfiguration<BorrowingR
 
         builder.HasKey(r => r.Id);
 
-        builder.Property(r => r.BookTitle)
-            .IsRequired()
-            .HasMaxLength(200);
-
         builder.Property(r => r.BorrowingPeriodDays)
             .IsRequired();
 
