@@ -9,6 +9,8 @@ using Application.Services.Books;
 using LMS.Application.Contracts.UOW;
 using LMS.Application.Services.UOW;
 using Microsoft.Extensions.DependencyInjection;
+using Application.Services.BorrowingRequests;
+using Application.Contracts.BorrowingRequest;
 
 namespace Application.Extensions;
 
@@ -22,6 +24,7 @@ public static partial class LmsRegistration
         services.AddScoped<IAuthenticationAppService, AuthenticationAppService>();
         services.AddScoped<ICategoryAppService, CategoryAppService>();
         services.AddScoped<IBookAppService, BookAppService>();
+        services.AddScoped<IBorrowingAppService, BorrowingAppService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
