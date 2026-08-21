@@ -4,6 +4,8 @@ using Application.Mappings;
 using LMS.Core.Results;
 using LMS.Domain.Entities;
 using LMS.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Application.Services.Users;
 
@@ -82,5 +84,14 @@ public class UserAppService : IUserAppService
         await _userRepository.SaveChangesAsync();
 
         return Result<UserDto>.Success(user.ToDto());
+    }
+
+    public async Task<UserDto?> GetByIdentityIdAsync(Guid id)
+    {
+        var query = _userRepository.GetAllQuerable();
+        User? user = await query.FirstOrDefaultAsync(u => u.IdentityUserId == id);
+        if (user == null)
+            return null;
+        return user.ToDto();
     }
 }
