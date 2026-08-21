@@ -16,11 +16,6 @@ public class BorrowingRequest : AuditableEntity<Guid>
     public Book Book { get; set; }
 
     /// <summary>
-    /// Denormalized display field
-    /// </summary>
-    public string BookTitle { get; set; } = string.Empty;
-
-    /// <summary>
     /// Requesting user
     /// </summary>
     public Guid UserId { get; set; }
@@ -50,7 +45,7 @@ public class BorrowingRequest : AuditableEntity<Guid>
     /// Admin reviewer ID
     /// </summary>
     public Guid? ReviewedBy { get; set; }
-    public User Reviewer { get; set; }
+    public User? Reviewer { get; set; }
 
     /// <summary>
     /// Present when denied
