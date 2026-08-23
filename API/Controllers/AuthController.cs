@@ -34,4 +34,13 @@ public class AuthController : ControllerBase
         var result = await _authService.Login(dto);
         return result;
     }
+
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(Result<AuthenticationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<AuthenticationDto>), StatusCodes.Status400BadRequest)]
+    public async Task<Result<AuthenticationDto>> RefreshToken([FromBody] RefreshTokenRequestDto dto)
+    {
+        var result = await _authService.RefreshTokenAsync(dto);
+        return result;
+    }
 }
