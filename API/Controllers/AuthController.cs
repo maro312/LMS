@@ -43,4 +43,13 @@ public class AuthController : ControllerBase
         var result = await _authService.RefreshTokenAsync(dto);
         return result;
     }
+
+    [HttpPost("logout")]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<bool>), StatusCodes.Status400BadRequest)]
+    public async Task<Result<bool>> Logout([FromBody] LogoutDto dto)
+    {
+        var result = await _authService.LogoutAsync(dto);
+        return result;
+    }
 }
