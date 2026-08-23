@@ -21,6 +21,7 @@ public class LmsDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<G
     public new DbSet<User> Users { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<BorrowingRequest> BorrowRequests { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     #endregion
 
     protected override void OnModelCreating(ModelBuilder builder)
