@@ -266,6 +266,42 @@ public class AuthenticationAppService : IAuthenticationAppService
         }
     }
 
+    public async Task<Result<bool>> LogoutAsync(LogoutDto dto)
+    {
+        if (dto == null || string.IsNullOrWhiteSpace(dto.RefreshToken))
+        {
+            return Result<bool>.BadRequest("Refresh token is required.");
+        }
+
+        var storedRefreshToken = await _refreshTokenRepository.GetAllQuerable()
+            .FirstOrDefaultAsync(x => x.Token == dto.RefreshToken);
+
+        if (storedRefreshToken == null)
+        {
+            return Result<bool>.Success(true);
+        }
+
+        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            storedRefreshToken.IsRevoked = true;
+            await _refreshTokenRepository.UpdateAsync(storedRefreshToken);
+            await _unitOfWork.CommitTransactionAsync();
+
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during logout.");
+            await _unitOfWork.RollbackTransactionAsync();
+            return Result<bool>.InternalServerError("An error occurred during logout.");
+        }
+        finally
+        {
+            _unitOfWork.Dispose();
+        }
+    }
+
     /// <summary>
     /// Validates the expired JWT token and returns the ClaimsPrincipal if valid.
     /// </summary>
@@ -334,7 +370,7 @@ public class AuthenticationAppService : IAuthenticationAppService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(1),
+            Expires = DateTime.UtcNow.AddMinutes(15),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
