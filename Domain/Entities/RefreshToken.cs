@@ -7,7 +7,7 @@ namespace LMS.Domain.Entities;
 /// <summary>
 /// Represents a refresh token used for authenticating API requests after a JWT expires.
 /// </summary>
-public class RefreshToken : AuditableEntity<Guid>
+public class RefreshToken : BaseEntity<Guid>
 {
     /// <summary>
     /// The randomly generated refresh token string.
