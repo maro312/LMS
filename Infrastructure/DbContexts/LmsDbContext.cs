@@ -14,6 +14,7 @@ public class LmsDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<G
 
     #region Lookup Entities
     public DbSet<Category> Categories { get; set; }
+    public DbSet<BookLanguage> BookLanguages { get; set; }
     #endregion
 
     #region Entities
