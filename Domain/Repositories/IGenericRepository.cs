@@ -48,7 +48,17 @@ public interface IGenericRepository<TEntity, TId> where TEntity : class
     Task<bool> ExistsAsync(TId id);
 
     /// <summary>
+    /// Find entities based on a predicate asynchronously
+    /// </summary>
+    Task<IList<TEntity>> FindAsync(System.Linq.Expressions.Expression<Func<TEntity, bool>> predicate);
+
+    /// <summary>
     /// Save all changes to data store
     /// </summary>
     Task<int> SaveChangesAsync();
+
+    /// <summary>
+    /// Get the total count of entities
+    /// </summary>
+    Task<int> CountAsync();
 }

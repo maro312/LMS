@@ -2,6 +2,7 @@ using LMS.Core.Contracts;
 using LMS.Domain.Repositories;
 using LMS.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace LMS.Infrastructure.Repositories;
 
@@ -42,7 +43,8 @@ public class Repository<TEntity, TKey> : IGenericRepository<TEntity, TKey> where
     /// <inheritdoc/>
     public async Task<IList<TEntity>> GetAllPagenatedAsync(int pageSize, int pageNumber)
     {
-        return await _context.Set<TEntity>().AsNoTracking().Skip(pageNumber * pageSize).Take(pageSize).ToListAsync();
+        var skipCount = (pageNumber - 1) * pageSize;
+        return await _context.Set<TEntity>().AsNoTracking().Skip(skipCount >= 0 ? skipCount : 0).Take(pageSize).ToListAsync();
     }
 
     /// <inheritdoc/>
@@ -74,5 +76,17 @@ public class Repository<TEntity, TKey> : IGenericRepository<TEntity, TKey> where
     public async Task<int> SaveChangesAsync()
     {
         return await _context.SaveChangesAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<IList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _context.Set<TEntity>().AsNoTracking().Where(predicate).ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<int> CountAsync()
+    {
+        return await _context.Set<TEntity>().CountAsync();
     }
 }
