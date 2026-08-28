@@ -1,4 +1,4 @@
-﻿using LMS.Core.Dtos;
+using LMS.Core.Dtos;
 using LMS.Domain.Lookups;
 using Microsoft.AspNetCore.Http;
 
@@ -56,5 +56,10 @@ public class BookDto : AuditableDto<Guid>
     /// The date when the book was published. This property is optional and can be null if the publish date is not available.
     /// </summary>
     public DateOnly? PublishDate { get; set; }
+
+    /// <summary>
+    /// Language lookup reference
+    /// </summary>
+    public Guid? BookLanguageId { get; set; }
 }
 

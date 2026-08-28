@@ -1,4 +1,4 @@
-﻿using LMS.Domain.Lookups;
+using LMS.Domain.Lookups;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Dtos.Books;
@@ -54,4 +54,9 @@ public class CreateUpdateBookDto
     /// The date when the book was published. This property is optional and can be null if the publish date is not available.
     /// </summary>
     public DateOnly? PublishDate { get; set; }
+
+    /// <summary>
+    /// Language lookup reference
+    /// </summary>
+    public Guid? BookLanguageId { get; set; }
 }
