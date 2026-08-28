@@ -23,6 +23,7 @@ public static class BookMapping
             BookPhotoUrl = book.BookPhotoUrl,
             PublisherName = book.PublisherName,
             PublishDate = book.PublishDate,
+            BookLanguageId = book.BookLanguageId,
             CreatedDate = book.CreatedDate,
             CreatedBy = book.CreatedBy,
             UpdatedDate = book.UpdatedDate,
@@ -45,7 +46,8 @@ public static class BookMapping
             TotalCopies = dto.TotalCopies,
             AvailableCopies = dto.AvailableCopies,
             PublisherName = dto.PublisherName,
-            PublishDate = dto.PublishDate
+            PublishDate = dto.PublishDate,
+            BookLanguageId = dto.BookLanguageId
         };
     }
 
@@ -62,6 +64,7 @@ public static class BookMapping
         book.AvailableCopies = dto.AvailableCopies;
         book.PublisherName = dto.PublisherName;
         book.PublishDate = dto.PublishDate;
+        book.BookLanguageId = dto.BookLanguageId;
 
         return book;
     }

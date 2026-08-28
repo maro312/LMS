@@ -45,5 +45,10 @@ public class BookConfiguration : IEntityTypeConfiguration<Book>
             .WithMany()
             .HasForeignKey(b => b.CategoryId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(b => b.BookLanguage)
+            .WithMany()
+            .HasForeignKey(b => b.BookLanguageId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

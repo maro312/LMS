@@ -56,4 +56,11 @@ public class Book : AuditableEntity<Guid>
     /// The date when the book was published. This property is optional and can be null if the publish date is not available.
     /// </summary>
     public DateOnly? PublishDate { get; set; }
+
+    /// <summary>
+    /// Language Lookup referance
+    /// </summary>
+    public Guid? BookLanguageId { get; set; }
+    public BookLanguage? BookLanguage { get; set; }
+    public int PageNumber { get; set; }
 }

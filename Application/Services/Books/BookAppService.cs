@@ -59,6 +59,43 @@ public class BookAppService : IBookAppService
         return Result<IEnumerable<BookDto>>.Success(dtos);
     }
 
+    public async Task<Result<PagedResult<BookDto>>> GetAllPaginatedAsync(int pageNumber, int pageSize)
+    {
+        var books = await _bookRepository.GetAllPagenatedAsync(pageSize, pageNumber);
+        var totalCount = books.Count;
+        var dtos = books.Select(b => b.ToDto()).ToList();
+        
+        var pagedResult = new PagedResult<BookDto>(dtos, pageNumber, pageSize, totalCount);
+        return Result<PagedResult<BookDto>>.Success(pagedResult);
+    }
+
+    public async Task<Result<IEnumerable<BookDto>>> SearchAsync(string keyword)
+    {
+        if (string.IsNullOrWhiteSpace(keyword))
+        {
+            return await GetAllAsync();
+        }
+
+        var lowerKeyword = keyword.ToLower();
+        var books = await _bookRepository.FindAsync(b => 
+            b.Title.ToLower().Contains(lowerKeyword) || 
+            b.Author.ToLower().Contains(lowerKeyword) || 
+            (b.Isbn != null && b.Isbn.ToLower().Contains(lowerKeyword)));
+
+        var dtos = books.Select(b => b.ToDto()).ToList();
+        return Result<IEnumerable<BookDto>>.Success(dtos);
+    }
+
+    public async Task<Result<IEnumerable<BookDto>>> FilterAsync(Guid? categoryId, bool? isAvailable)
+    {
+        var books = await _bookRepository.FindAsync(b => 
+            (!categoryId.HasValue || b.CategoryId == categoryId.Value) &&
+            (!isAvailable.HasValue || b.IsAvailable == isAvailable.Value));
+
+        var dtos = books.Select(b => b.ToDto()).ToList();
+        return Result<IEnumerable<BookDto>>.Success(dtos);
+    }
+
     public async Task<Result<BookDto>> UpdateAsync(CreateUpdateBookDto input, Guid id)
     {
         if (input == null)

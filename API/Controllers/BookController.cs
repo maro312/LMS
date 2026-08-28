@@ -60,4 +60,28 @@ public class BookController : ControllerBase
     {
         return await _bookAppService.DeleteAsync(id);
     }
+
+    [HttpGet("paginated")]
+    [ProducesResponseType(typeof(Result<PagedResult<BookDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<PagedResult<BookDto>>), StatusCodes.Status400BadRequest)]
+    public async Task<Result<PagedResult<BookDto>>> GetAllPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        return await _bookAppService.GetAllPaginatedAsync(pageNumber, pageSize);
+    }
+
+    [HttpGet("search")]
+    [ProducesResponseType(typeof(Result<IEnumerable<BookDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<IEnumerable<BookDto>>), StatusCodes.Status400BadRequest)]
+    public async Task<Result<IEnumerable<BookDto>>> Search([FromQuery] string keyword)
+    {
+        return await _bookAppService.SearchAsync(keyword);
+    }
+
+    [HttpGet("filter")]
+    [ProducesResponseType(typeof(Result<IEnumerable<BookDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<IEnumerable<BookDto>>), StatusCodes.Status400BadRequest)]
+    public async Task<Result<IEnumerable<BookDto>>> Filter([FromQuery] Guid? categoryId, [FromQuery] bool? isAvailable)
+    {
+        return await _bookAppService.FilterAsync(categoryId, isAvailable);
+    }
 }
