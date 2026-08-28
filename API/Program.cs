@@ -25,7 +25,11 @@ public class Program
 
         builder.Services.AddLmsServices(builder.Configuration);
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+            });
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
@@ -99,6 +103,7 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
 
         app.UseAuthentication();
         app.UseAuthorization();

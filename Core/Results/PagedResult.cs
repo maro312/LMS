@@ -7,27 +7,27 @@ public class PagedResult<T>
     [JsonPropertyName("items")]
     public List<T> Items { get; set; } = new();
 
-    [JsonPropertyName("page")]
-    public int Page { get; set; } = 1;
+    [JsonPropertyName("pageNumber")]
+    public int PageNumber { get; set; } = 1;
 
     [JsonPropertyName("pageSize")]
     public int PageSize { get; set; } = 20;
 
-    [JsonPropertyName("totalItems")]
-    public int TotalItems { get; set; }
+    [JsonPropertyName("totalCount")]
+    public int TotalCount { get; set; }
 
     [JsonPropertyName("totalPages")]
-    public int TotalPages => PageSize > 0 ? (int)Math.Ceiling((double)TotalItems / PageSize) : 0;
+    public int TotalPages => PageSize > 0 ? (int)Math.Ceiling((double)TotalCount / PageSize) : 0;
 
     public PagedResult()
     {
     }
 
-    public PagedResult(IEnumerable<T> items, int page, int pageSize, int totalItems)
+    public PagedResult(IEnumerable<T> items, int pageNumber, int pageSize, int totalCount)
     {
         Items = items.ToList();
-        Page = page;
+        PageNumber = pageNumber;
         PageSize = pageSize;
-        TotalItems = totalItems;
+        TotalCount = totalCount;
     }
 }
