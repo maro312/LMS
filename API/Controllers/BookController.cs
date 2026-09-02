@@ -70,11 +70,11 @@ public class BookController : ControllerBase
     }
 
     [HttpGet("search")]
-    [ProducesResponseType(typeof(Result<IEnumerable<BookDto>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Result<IEnumerable<BookDto>>), StatusCodes.Status400BadRequest)]
-    public async Task<Result<IEnumerable<BookDto>>> Search([FromQuery] string keyword)
+    [ProducesResponseType(typeof(Result<PagedResult<BookDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Result<PagedResult<BookDto>>), StatusCodes.Status400BadRequest)]
+    public async Task<Result<PagedResult<BookDto>>> Search([FromQuery] string keyword, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        return await _bookAppService.SearchAsync(keyword);
+        return await _bookAppService.SearchAsync(keyword, pageNumber, pageSize);
     }
 
     [HttpGet("filter")]
