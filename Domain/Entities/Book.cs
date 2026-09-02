@@ -63,4 +63,5 @@ public class Book : AuditableEntity<Guid>
     public Guid? BookLanguageId { get; set; }
     public BookLanguage? BookLanguage { get; set; }
     public int PageNumber { get; set; }
+    public string description { get; set; }
 }
