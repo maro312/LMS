@@ -24,6 +24,8 @@ public static class BookMapping
             PublisherName = book.PublisherName,
             PublishDate = book.PublishDate,
             BookLanguageId = book.BookLanguageId,
+            PageNumber = book.PageNumber,
+            description = book.description,
             CreatedDate = book.CreatedDate,
             CreatedBy = book.CreatedBy,
             UpdatedDate = book.UpdatedDate,
@@ -47,7 +49,9 @@ public static class BookMapping
             AvailableCopies = dto.AvailableCopies,
             PublisherName = dto.PublisherName,
             PublishDate = dto.PublishDate,
-            BookLanguageId = dto.BookLanguageId
+            BookLanguageId = dto.BookLanguageId,
+            PageNumber = dto.PageNumber,
+            description = dto.description
         };
     }
 
@@ -65,6 +69,8 @@ public static class BookMapping
         book.PublisherName = dto.PublisherName;
         book.PublishDate = dto.PublishDate;
         book.BookLanguageId = dto.BookLanguageId;
+        book.PageNumber = dto.PageNumber;
+        book.description = dto.description;
 
         return book;
     }
