@@ -1,4 +1,4 @@
-using System.Text;
+using API.Hubs;
 using Application.Extensions;
 using LMS.API.Middleware;
 using LMS.Infrastructure.Data;
@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using System.Text;
 
 namespace LMS.API;
 
@@ -81,6 +82,22 @@ public class Program
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
+
+            jwt.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    
+                    // Read the token out of the query string for SignalR requests
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/borrow-hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         // Forwarded headers for ngrok tunneling
@@ -90,6 +107,20 @@ public class Program
             options.KnownIPNetworks.Clear();
             options.KnownProxies.Clear();
         });
+
+        var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+        if (!string.IsNullOrEmpty(redisConnectionString))
+        {
+            builder.Services.AddSignalR().AddStackExchangeRedis(redisConnectionString, options => {
+                options.Configuration.ChannelPrefix = "LMS_SignalR";
+            });
+        }
+        else
+        {
+            builder.Services.AddSignalR();
+        }
+
+        builder.Services.AddScoped<global::Application.Contracts.Notifications.INotificationService, global::API.Services.SignalRNotificationService>();
 
         var app = builder.Build();
 
@@ -109,6 +140,8 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.MapHub<BorrowingHub>("borrow-hubs");
 
         app.Run();
     }
