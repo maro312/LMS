@@ -1,6 +1,7 @@
 using Application.Contracts.BorrowingRequest;
 using Application.Dtos.BorrowingRequest;
 using LMS.Domain.Constants;
+using LMS.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,9 @@ public class BorrowingController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = UserRoles.Admin)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] BorrowingRequestStatus? status)
     {
-        var result = await _borrowingAppService.GetAllAsync();
+        var result = await _borrowingAppService.GetAllAsync(status);
         if (result.IsSuccess)
             return Ok(result);
             
