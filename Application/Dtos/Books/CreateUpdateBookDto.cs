@@ -59,4 +59,8 @@ public class CreateUpdateBookDto
     /// Language lookup reference
     /// </summary>
     public Guid? BookLanguageId { get; set; }
+
+    public int PageNumber { get; set; }
+
+    public string description { get; set; } = string.Empty;
 }
